@@ -1,0 +1,176 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.1.0                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+castellatedMesh true; 
+snap            false; 
+addLayers       false;
+
+geometry
+{
+
+    wall_simpleGeometry
+    {
+      type searchableBox;
+      min ( 5  2.4 0); 
+      max ( 5.5  2.6 1);
+    }
+    
+    freeSurface
+    {
+      type searchableBox;
+      min ( 0  0 0.7); 
+      max ( 14  5 1.1);
+    }
+
+    freeSurface_near_inlet
+    {
+      type searchableBox;
+      min (0    0 0.8); 
+      max (0.1  5 1.0);
+    }
+    
+};
+
+castellatedMeshControls
+{
+
+    maxLocalCells 1000000;
+    maxGlobalCells 4000000;
+    minRefinementCells 0;
+    maxLoadUnbalance 0.10;
+    nCellsBetweenLevels 3;
+
+    features
+    (
+    );
+
+    refinementSurfaces
+    {
+        wall_simpleGeometry
+        {
+	    level (1 2);
+        }
+    }
+
+    resolveFeatureAngle 30;
+
+    refinementRegions
+    {
+       freeSurface
+       {
+         mode inside;
+         levels ((0.0 2)); 
+       }  
+       freeSurface_near_inlet
+       {
+         mode inside;
+         levels ((3 3)); 
+       }  
+    }
+
+    locationInMesh (1.0 2.5 1.0);
+    allowFreeStandingZoneFaces true;
+}
+
+snapControls
+{
+    nSmoothPatch 3;
+    tolerance 4.0;
+    nSolveIter 30;
+    nRelaxIter 5;
+    nFeatureSnapIter 10; 
+}
+
+addLayersControls
+{
+    relativeSizes true;
+
+    layers
+    {
+    }
+
+    expansionRatio 1.0;
+    finalLayerThickness 0.3;
+    minThickness 0.01; //0.1;
+
+    nGrow 0;
+
+    featureAngle 180; //60;
+
+    nRelaxIter 5;
+
+    nSmoothSurfaceNormals 1;
+
+    nSmoothNormals 3;
+
+    nSmoothThickness 10;
+
+    maxFaceThicknessRatio 0.5;
+
+    maxThicknessToMedialRatio 0.3;
+
+    minMedianAxisAngle 90;
+
+    nBufferCellsNoExtrude 0;
+
+    nLayerIter 50;
+}
+
+meshQualityControls
+{
+    maxNonOrtho 65;
+    maxBoundarySkewness 20;
+    maxInternalSkewness 4;
+    maxConcave 80;
+    minVol 1e-13;
+    minTetQuality 1e-30;
+    minArea -1;
+    minTwist 0.05;
+    minDeterminant 0.001;
+    minFaceWeight 0.05;
+    minVolRatio 0.01;
+    minTriangleTwist -1;
+    nSmoothScale 4;
+    errorReduction 0.75;
+}
+
+// Advanced
+
+//// Debug flags
+//debugFlags
+//(
+//    mesh            // write intermediate meshes
+//    intersections   // write current mesh intersections as .obj files
+//    featureSeeds    // write information about explicit feature edge
+//                    // refinement
+//    attraction      // write attraction as .obj files
+//    layerInfo       // write information about layers
+//);
+//
+//// Write flags
+writeFlags
+(
+    scalarLevels    // write volScalarField with cellLevel for postprocessing
+//    layerSets       // write cellSets, faceSets of faces in layer
+//    layerFields     // write volScalarField for layer coverage
+);
+
+// Merge tolerance. Is fraction of overall bounding box of initial mesh.
+// Note: the write tolerance needs to be higher than this.
+mergeTolerance 1e-6;
+
+
+// ************************************************************************* //

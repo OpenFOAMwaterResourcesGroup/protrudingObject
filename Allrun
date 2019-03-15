@@ -1,0 +1,19 @@
+#!/bin/bash
+
+rm -r 0
+foamCleanPolyMesh
+foamListTimes -rm
+
+blockMesh
+snappyHexMesh -overwrite
+
+rm -r ./constant/polyMesh/Sets 
+setSet -batch ./system/setSet
+createPatch -overwrite -dict ./system/createPatchDict
+
+rm -r 0
+cp -r 0.orig 0
+
+setFields
+decomposePar
+mpirun -np 4 interFoam -parallel
