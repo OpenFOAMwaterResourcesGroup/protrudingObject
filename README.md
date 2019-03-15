@@ -16,4 +16,4 @@ Limitations:
 - Drowned 'in' patch prevents instabilities where 'in' and 'aboveIn' meet
 - Drowned 'out' patch prevents instabilities at 'out' and 'aboveOut' patch
 - A wave sweeps the domain but abates with time
-- Side walls are imposed, ideally I image these should be 
+- Side walls are imposed, ideally I these should likey be zeroGradient 
